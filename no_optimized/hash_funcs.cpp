@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+
 #include "hash_table.h"
 
 hash_t HashRetZero (const char* const element)
@@ -7,9 +8,9 @@ hash_t HashRetZero (const char* const element)
     return 0;
 }
 
-hash_t HashFirstLatter (const char* const element)
+hash_t HashFirstAscii (const char* const element)
 {
-    return (hash_t)(element[0]);
+    return (hash_t)element[0];
 }
 
 hash_t HashWordLen (const char* const element)
@@ -17,68 +18,59 @@ hash_t HashWordLen (const char* const element)
     return strlen (element);
 }
 
-hash_t HashControlSum (const char* const element)
+hash_t HashAsciiSum (const char* const element)
 {
     int sum = 0;
 
     for (int i = 0; element[i] != '\0'; i++)
-    {
         sum += (int)(element[i]);
-    }
 
     return sum;
 }
 
-hash_t HashFifth (const char* const element)
+hash_t HashOriginal (const char* const element)
 {
-    int sum = 0;
+    hash_t sum = 0;
+    hash_t len = 0;
 
     for (int i = 0; element[i] != '\0'; i++)
     {
-        sum += (int)(element[i]);
+        sum += (hash_t)(element[i]);
+        len++;
     }
 
-    return sum / strlen (element);
+    return sum / len;
 }
 
-// hash_t HashCirShift (const char* const element)
-// {
-//     if (element[0] == '\0')
-//     {
-//         return 0;
-//     }
-//
-//     int hash_code = (int)(element[0]);
-//
-//     asm
-//     (
-//         ".intel_syntax noprefix\n"
-//
-//         "mov eax, %1\n" :: "r"(hash_code) : "eax"
-//     );
-//
-//     for (int i = 1; element[i] != '\0'; i++)
-//     {
-//         asm
-//         (
-//             ".intel_syntax noprefix\n"
-//
-//             "mov cl, 1\n"
-//
-//             "mov ebx, [element + i]\n"
-//             "ror eax, cl\n"
-//
-//             "xor eax, ebx\n" ::: "eax"
-//         );
-//     }
-//     asm
-//     (
-//         ".intel_syntax noprefix\n"
-//         "mov %0, eax\n" : "=r"(hash_code) :: "eax"
-//     );
-//
-//     return hash_code;
-// }
+hash_t HashRorAscii (const char* const element)
+{
+    if (element[0] == '\0')
+        return 0;
+
+    int tmp = element[0];
+
+    for (int i = 1; element[i] != '\0'; i++)
+    {
+        __asm__
+        (
+            "mov eax, %1 ;\n"
+            "mov cl, 1   ;\n"
+
+            "ror ax, cl  ;\n"
+
+            "mov ebx, %2 ;\n"
+
+            "xor ax, bx  ;\n"
+
+            "mov %0, eax ;"
+
+            : "=m"(tmp)
+            : "g"(tmp), "g"((int)(element[i]))
+            : "ax", "bx", "cx"
+        );
+    }
+    return (hash_t)tmp;
+}
 
 hash_t MurmurHash (const char* const key)
 {
