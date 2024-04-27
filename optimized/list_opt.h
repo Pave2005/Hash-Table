@@ -1,6 +1,12 @@
 #ifndef LIST_H
 #define LIST_H
 
+#define ASM
+
+#include <smmintrin.h>
+#include <sys/types.h>
+#include <immintrin.h>
+
 typedef char* Elem_list;
 
 enum COMMAND
@@ -22,9 +28,11 @@ enum LIST
     NO_CONNECTION = -1,
 };
 
-struct ListNode
+#ifndef ASM
+
+struct alignas(32) ListNode
 {
-    Elem_list data;
+    __m256i data;
     int next;
     int prev;
 
@@ -32,7 +40,7 @@ struct ListNode
     int free_next;
 };
 
-struct List
+struct alignas(32) List
 {
     int size;
 
@@ -43,6 +51,30 @@ struct List
     int head_of_free;
 };
 
+#else
+
+struct alignas(32) ListNode
+{
+    Elem_list data;
+    int next;
+    int prev;
+
+    int free_data;
+    int free_next;
+};
+
+struct alignas(32) List
+{
+    int size;
+
+    ListNode* list_elem;
+    int head;
+    int tail;
+
+    int head_of_free;
+};
+
+#endif
 
 void UpdateListOfFree (List* list);
 void ListPush         (List* list, Elem_list num);

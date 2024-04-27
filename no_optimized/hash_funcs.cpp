@@ -42,35 +42,35 @@ hash_t HashOriginal (const char* const element)
     return sum / len;
 }
 
-hash_t HashRorAscii (const char* const element)
-{
-    if (element[0] == '\0')
-        return 0;
-
-    int tmp = element[0];
-
-    for (int i = 1; element[i] != '\0'; i++)
-    {
-        __asm__
-        (
-            "mov eax, %1 ;\n"
-            "mov cl, 1   ;\n"
-
-            "ror ax, cl  ;\n"
-
-            "mov ebx, %2 ;\n"
-
-            "xor ax, bx  ;\n"
-
-            "mov %0, eax ;"
-
-            : "=m"(tmp)
-            : "g"(tmp), "g"((int)(element[i]))
-            : "ax", "bx", "cx"
-        );
-    }
-    return (hash_t)tmp;
-}
+// hash_t HashRorAscii (const char* const element)
+// {
+//     if (element[0] == '\0')
+//         return 0;
+//
+//     int tmp = element[0];
+//
+//     for (int i = 1; element[i] != '\0'; i++)
+//     {
+//         __asm__
+//         (
+//             "mov eax, %1 ;\n"
+//             "mov cl, 1   ;\n"
+//
+//             "ror ax, cl  ;\n"
+//
+//             "mov ebx, %2 ;\n"
+//
+//             "xor ax, bx  ;\n"
+//
+//             "mov %0, eax ;"
+//
+//             : "=m"(tmp)
+//             : "g"(tmp), "g"((int)(element[i]))
+//             : "ax", "bx", "cx"
+//         );
+//     }
+//     return (hash_t)tmp;
+// }
 
 hash_t MurmurHash (const char* const key)
 {

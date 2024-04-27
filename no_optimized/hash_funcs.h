@@ -1,7 +1,9 @@
 #ifndef FUNCS
 #define FUNCS
 
-#include "hash_table.h"
+typedef long long hash_t;
+
+hash_t FastHash        (const char* const element, int word_size);
 
 hash_t HashRetZero     (const char* const element);
 hash_t HashFirstAscii  (const char* const element);

@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <xmmintrin.h>
+#include <x86intrin.h>
+#include <string.h>
 
 #include "list.h"
+
+#define ALIGNMENT 32
 
 void ListDtor (List* list)
 {
